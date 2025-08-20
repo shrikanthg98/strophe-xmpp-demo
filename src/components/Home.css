@@ -1,0 +1,73 @@
+.main-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.rounded-btn {
+  padding: 10px 15px;
+  background-color: #282c34;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background transform 0.3s ease;
+}
+
+.rounded-btn:hover {
+  background-color: rgb(0, 0, 0);
+  transform: scale(1.05);
+}
+
+.main-container {
+  background-color: #f5f5f5;
+  border: 3px solid #eee;
+  border-radius: 10px;
+  height: 85vh;
+  width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.432);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chat-container {
+  background-color: #f5f5f5;
+  border: 3px solid #eee;
+  border-radius: 10px;
+  height: 75vh;
+  width: 80%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.432);
+  display: flex;
+  z-index: 99;
+}
+
+.floating-msg-button {
+  position: fixed;
+  bottom: 15vh;
+  right: 10vw;
+  box-shadow: rgba(0, 0, 0, 0.56) -3px 6px 11px 0px !important;
+  border-radius: 20px !important;
+}
+
+.msg-btn-icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.msg-badge {
+  position: absolute;
+  top: -17px;
+  right: -16px;
+  background-color: red;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 999px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px white;
+}

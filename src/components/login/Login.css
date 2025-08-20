@@ -1,0 +1,19 @@
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.login-card {
+  margin-top: 10%;
+  width: 20rem;
+  box-shadow: 7px 15px 44px -10px rgba(0, 0, 0, 0.52);
+  -webkit-box-shadow: 7px 15px 44px -10px rgba(0, 0, 0, 0.52);
+  -moz-box-shadow: 7px 15px 44px -10px rgba(0, 0, 0, 0.52);
+  border: 1px solid grey;
+}
+
+#login-btn {
+  margin-bottom: 0;
+}

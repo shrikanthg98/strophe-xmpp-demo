@@ -1,0 +1,57 @@
+/* body {
+  background-color: #282c34;
+} */
+
+.App {
+  text-align: center;
+}
+
+/* .text-white {
+  color: white;
+} */
+
+.text-bold-500 {
+  font-weight: 500;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.custom-h2 {
+  display: block;
+  font-size: 1.5em;
+  font-weight: bold;
+  unicode-bidi: isolate;
+  padding: 1rem 0;
+}
+
+.display-flex {
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 0.3rem;
+}
+
+.status-dot.online {
+  background-color: green;
+}
+
+.status-dot.offline {
+  background-color: grey;
+}
+
+.message-count {
+  background-color: #282c34;
+  /* color: white; */
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+}

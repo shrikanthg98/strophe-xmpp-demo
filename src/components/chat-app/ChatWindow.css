@@ -1,0 +1,160 @@
+.chat-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0rem 1rem 1rem 1rem;
+  box-sizing: border-box;
+}
+
+.chat-window.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.chat-container-options {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  .minimize {
+    border: none;
+    background-color: #f5f5f5;
+    width: 30px;
+    font-weight: bolder;
+    font-size: larger;
+    cursor: pointer;
+    margin-right: 1rem;
+    &:hover {
+      color: red;
+    }
+  }
+}
+
+.chat-container-minimize {
+  height: 100%;
+}
+
+.chat-container-minimize button {
+  border: none;
+  background-color: #f5f5f5;
+  width: 30px;
+  font-weight: bolder;
+  font-size: larger;
+  cursor: pointer;
+  &:hover {
+    color: red;
+  }
+}
+
+.message-history {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+/* .message {
+  margin-bottom: 8px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.message.you {
+  text-align: right;
+  background-color: #282c342d;
+}
+
+.message.them {
+  text-align: left;
+  background-color: #282c3410;
+} */
+
+/* ✅ ChatWindow.css */
+
+.message {
+  margin-bottom: 8px;
+  border-radius: 10px;
+  padding: 10px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  max-width: 90%;
+}
+
+.message.you {
+  text-align: right;
+  background-color: #282c342d;
+  align-self: flex-end;
+}
+
+.message.them {
+  text-align: left;
+  background-color: #282c3410;
+  align-self: flex-start;
+}
+
+.message-body {
+  white-space: pre-wrap; /* ✅ keeps line breaks and wraps text */
+  overflow-wrap: break-word;
+  word-break: break-word;
+  -webkit-font-smoothing: antialiased;
+}
+
+.input-bar {
+  display: flex;
+  gap: 10px;
+}
+
+.input-bar textarea {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.time-stamp {
+  margin-top: 10px;
+  font-size: x-small;
+  font-weight: bold;
+  color: gray;
+}
+
+.reply-to-message-arrow {
+  margin-bottom: 10px;
+  text-align: right;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
+.reply-to-message {
+  background-color: #d0d0d0;
+  border-left: 4px solid #282c34;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.reply-to-message-body {
+  text-align: left;
+  /* white-space: nowrap;
+  overflow-wrap: break-word;
+  word-break: break-word; */
+  text-overflow: ellipsis;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.reply-to-message-close {
+  cursor: pointer;
+  text-align: right;
+  transition: transform 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+}

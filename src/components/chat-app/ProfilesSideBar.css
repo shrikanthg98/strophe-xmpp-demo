@@ -1,0 +1,99 @@
+.profiles-sidebar {
+  background-color: #fff;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  transition: width 0.3s ease;
+  padding: 0rem 1rem 1rem 1rem;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.profiles-sidebar.collapsed {
+  width: 190px;
+}
+
+.profiles-sidebar.expanded {
+  width: 350px;
+}
+
+.profile-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: text-bottom;
+  border: 2px solid #282c34;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.profiles-sidebar-header {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile-search-bar {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+.profile-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+}
+
+.profile-item {
+  text-align: justify;
+  padding: 10px;
+  margin-bottom: 5px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-item.selected {
+  background-color: #d0d0d0;
+  font-weight: bold;
+}
+
+.profile-item:hover {
+  background-color: #e0e0e0;
+}
+
+.admin-options-list {
+  list-style: none;
+  text-align: left;
+  padding: 0;
+}
+
+.admin-options-list li {
+  cursor: pointer;
+  padding: 10px;
+  margin: 2px;
+  width: 80%;
+  border-radius: 5px;
+  overflow: hidden;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #808080;
+  }
+}
