@@ -1,6 +1,7 @@
 import { Strophe, $pres, $msg } from "strophe.js";
 import loggerApi from "../services/loggerService";
 import moment from "moment";
+import { v4 as uuidv4 } from "uuid";
 
 let connection = null;
 let currentUser = null;
@@ -37,12 +38,6 @@ async function logOnDisconnected(username) {
   const t = ts();
   await loggerApi({ username, disconnected: t, offline: t });
   lastLoggedEvent = "disconnected";
-}
-
-// --- Nickname generator ---
-function generateNickname(baseName) {
-  const suffix = Math.floor(Math.random() * 1000); // 0–999
-  return `${baseName}_${suffix}`;
 }
 
 // --- Cleanup ---
@@ -86,11 +81,30 @@ function doConnect(username, password, onStatus, onMessageCb) {
   connection.addHandler(
     (stanza) => {
       const from = stanza.getAttribute("from")?.split("@")[0];
+      const messageId = stanza.getAttribute("id");
       const bodyEl = stanza.getElementsByTagName("body")[0];
-      if (bodyEl) {
-        const body = Strophe.getText(bodyEl);
-        onMessageCb && onMessageCb({ from, body, type: "dm" });
+      const replyEl = stanza.getElementsByTagName("reply")[0];
+
+      let payload = { from, type: "dm", stanzaId: messageId };
+
+      if (replyEl) {
+        const replyToId = replyEl.getAttribute("stanzaId");
+        const replyTo = replyEl.getAttribute("to");
+        const replyBody = Strophe.getText(replyEl) || null;
+
+        payload.reply = {
+          stanzaId: replyToId,
+          to: replyTo,
+          body: replyBody,
+        };
       }
+
+      if (bodyEl) {
+        payload.body = Strophe.getText(bodyEl);
+      }
+
+      if (onMessageCb) onMessageCb(payload);
+
       return true;
     },
     null,
@@ -102,10 +116,11 @@ function doConnect(username, password, onStatus, onMessageCb) {
   connection.addHandler(
     (stanza) => {
       const from = stanza.getAttribute("from");
+      const stanzaId = stanza.getAttribute("id");
       const bodyEl = stanza.getElementsByTagName("body")[0];
       if (bodyEl) {
         const body = Strophe.getText(bodyEl);
-        onMessageCb && onMessageCb({ from, body, type: "group" });
+        onMessageCb && onMessageCb({ from, body, type: "group", stanzaId });
       }
       return true;
     },
@@ -163,10 +178,20 @@ export async function connectXmpp(username, password, onStatus, onMessageCb) {
 }
 
 // --- DMs ---
-export function sendDirectMessage(toUsername, text) {
-  if (!connection || !text || !toUsername) return;
+export function sendDirectMessage(toUsername, message, replyToMessage = null) {
+  const { text, id } = message;
+  if (!connection || !text || !toUsername || !id) return;
   const toJid = `${toUsername}@${XMPP_DOMAIN}`;
-  const stanza = $msg({ to: toJid, type: "chat" }).c("body").t(text);
+  const stanza = $msg({ to: toJid, id, type: "chat" }).c("body").t(text);
+  if (replyToMessage && !!Object.keys(replyToMessage).length) {
+    stanza
+      .up()
+      .c("reply", {
+        stanzaId: replyToMessage?.stanzaId,
+        to: replyToMessage?.from,
+      })
+      .t(replyToMessage?.body);
+  }
   connection.send(stanza.tree());
 }
 
@@ -181,7 +206,6 @@ export function joinGroupChat(roomName, onMessageCb) {
   connection.send(pres.tree());
   const room = Array.from(joinedRooms).find((r) => r.roomName === roomName);
   if (!room) joinedRooms.add({ roomName, currentUser });
-  console.log("joinedRooms", joinedRooms);
 }
 
 export function sendGroupMessage(roomName, text) {
@@ -189,8 +213,9 @@ export function sendGroupMessage(roomName, text) {
   const room = Array.from(joinedRooms).find((r) => r.roomName === roomName);
   if (!room) return;
   const roomJid = `${roomName}@conference.${XMPP_DOMAIN}`;
-  const stanza = $msg({ to: roomJid, type: "groupchat" }).c("body").t(text);
-  console.log("stanza", stanza, text, roomJid);
+  const stanza = $msg({ to: roomJid, id: uuidv4(), type: "groupchat" })
+    .c("body")
+    .t(text);
   connection.send(stanza.tree());
 }
 

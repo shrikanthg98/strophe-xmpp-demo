@@ -38,6 +38,7 @@ import {
   sendDirectMessage,
   sendGroupMessage,
 } from "../../xmpp/xmppManager";
+import { v4 as uuidv4 } from "uuid";
 
 const ChatWindow = () => {
   const dispatch = useDispatch();
@@ -87,9 +88,28 @@ const ChatWindow = () => {
     const toUsername = selectedProfile?.name;
     const message = input.trim();
     if (!selectedProfile?.isGroup && toUsername && message) {
-      sendDirectMessage(toUsername, message);
+      const id = uuidv4();
+      sendDirectMessage(
+        toUsername,
+        { text: message, id },
+        replyToMessage?.stanzaId ? replyToMessage : null
+      );
       dispatch(
-        addMessage({ date: moment().toISOString(), from: "me", body: message })
+        addMessage({
+          date: moment().toISOString(),
+          from: "me",
+          body: message,
+          stanzaId: id,
+          ...(replyToMessage?.stanzaId
+            ? {
+                reply: {
+                  stanzaId: replyToMessage.stanzaId,
+                  to: replyToMessage.from,
+                  body: replyToMessage.body,
+                },
+              }
+            : {}),
+        })
       );
     }
 
@@ -98,6 +118,7 @@ const ChatWindow = () => {
     }
 
     setInput("");
+    dispatch(setReplyToMessage({}));
   };
 
   const handleUpload = async ({ file }) => {
@@ -262,15 +283,55 @@ const ChatWindow = () => {
               key={i}
               className={`message ${
                 (
-                  msg?.type === "group" || msg?.type === "groupchat"
-                    ? getNameAfterSlash(msg.from)
+                  msg?.type === "group"
+                    ? getNameAfterSlash(msg.from) === myDetails.name
                     : getName(msg.from) === myDetails.name || msg.from === "me"
                 )
                   ? "you"
                   : "them"
               }`}
             >
-              {console.log("MESSAGE", msg, getNameAfterSlash(msg.from))}
+              {!selectedProfile?.isClosed && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <ArrowLeftOutlined
+                    title="Reply to this message"
+                    className="reply-to-message-arrow"
+                    onClick={() => dispatch(setReplyToMessage(msg))}
+                  />
+                </div>
+              )}
+              {msg?.reply && (
+                <div
+                  style={{
+                    textAlign: "left",
+                    borderBottom: "2px solid #282c34",
+                    marginBottom: "0.5rem",
+                    paddingBottom: "0.5rem",
+                    alignItems: "center",
+                    gap: 5,
+                  }}
+                >
+                  <span style={{ fontSize: "0.8rem" }}>Reply to </span>
+                  <span className="text-bold-500" style={{ fontSize: "1rem" }}>
+                    {firstLetterCap(getName(msg?.reply?.to))}'s
+                  </span>
+                  <br />
+                  <div>{msg?.reply?.body}</div>
+                </div>
+              )}
+              {isGroup && msg?.type === "group" && (
+                <>
+                  <span className="text-bold-500">
+                    {firstLetterCap(getNameAfterSlash(msg?.from))}
+                  </span>
+                  <br />
+                </>
+              )}
               <div className="message-body">{msg.body}</div>
               <div className="time-stamp">
                 {moment(msg?.date)
@@ -306,7 +367,7 @@ const ChatWindow = () => {
               >
                 Replying to{" "}
                 <span className="text-bold-500" style={{ fontSize: "1rem" }}>
-                  {firstLetterCap(getNameAfterSlash(replyToMessage?.from))}`s
+                  {firstLetterCap(getName(replyToMessage?.from))}`s
                 </span>
               </div>
             </div>

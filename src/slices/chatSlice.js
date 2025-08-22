@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { chatApi } from "../services/chatApi";
-// import { getName, isFromWeb } from "../utils/helperFuncs";
 
 const initialState = {
   selectedProfile: {},
@@ -34,87 +33,22 @@ const chatSlice = createSlice({
       state.messages = action.payload;
     },
     addMessage: (state, action) => {
-      let messages = [...state.messages];
-      messages = [...messages, { ...action.payload }];
-      state.messages = messages;
+      const { messages, selectedProfile } = state;
+      const payload = action.payload;
+
+      if (!selectedProfile || !Object.keys(selectedProfile).length) return;
+
+      const isValidGroup = selectedProfile.isGroup && payload?.type === "group";
+      const isValidDm = !selectedProfile.isGroup && payload?.type === "dm";
+      const fromMe = payload?.from === "me";
+
+      if (isValidGroup || isValidDm || fromMe) {
+        state.messages = [...messages, payload];
+      }
     },
-    // addMessage: (state, action) => {
-    //   const newMessage = action.payload;
-    //   const presenceMap = state.presenceMap;
-    //   const selectedProfile = state.selectedProfile;
-    //   if (selectedProfile?.name) {
-    //     if (selectedProfile?.isGroup) {
-    //       let usersPresence = [];
-    //       let users = [...selectedProfile?.usersList] || [];
-    //       users.forEach((ele) => {
-    //         if (presenceMap[ele] === "online") {
-    //           usersPresence.push(true);
-    //           return;
-    //         }
-    //         usersPresence.push(false);
-    //       });
-    //       newMessage.status = usersPresence.includes(false)
-    //         ? "sent"
-    //         : "delivered";
-    //     } else {
-    //       newMessage.status =
-    //         presenceMap[selectedProfile.name.toLowerCase()] === "online"
-    //           ? "delivered"
-    //           : "sent";
-    //     }
-    //   }
-    //   state.messages.push(newMessage);
-    // },
     setTypingUser: (state, action) => {
       state.typingUser = action.payload;
     },
-    // updatePresence: (state, action) => {
-    //   const { from, type } = action.payload;
-    //   const selectedProfile = state.selectedProfile;
-    //   const messages = state.messages;
-    //   const myDetails = { ...state.myDetails };
-    //   const presenceMap = state.presenceMap;
-
-    //   if (!isFromWeb(from)) return;
-
-    //   state.presenceMap[getName(from)] =
-    //     type === "unavailable" ? "offline" : "online";
-
-    //   if (selectedProfile?.name) {
-    //     let tempMessages = [];
-    //     if (selectedProfile?.isGroup) {
-    //       let usersPresence = [];
-    //       if (
-    //         selectedProfile?.usersList &&
-    //         selectedProfile?.usersList?.length > 0
-    //       ) {
-    //         [...selectedProfile?.usersList]
-    //           ?.filter((ele) => ele !== myDetails?.name)
-    //           .forEach((ele) => {
-    //             if (presenceMap[ele] === "online") {
-    //               usersPresence.push(true);
-    //               return;
-    //             }
-    //             usersPresence.push(false);
-    //           });
-    //       }
-    //       tempMessages = messages.map((msg) => {
-    //         if (msg?.status === "sent" && !usersPresence.includes(false)) {
-    //           return { ...msg, status: "delivered" };
-    //         }
-    //         return msg;
-    //       });
-    //     } else {
-    //       tempMessages = messages.map((msg) => {
-    //         if (msg?.status === "sent") {
-    //           return { ...msg, status: "delivered" };
-    //         }
-    //         return msg;
-    //       });
-    //     }
-    //     state.messages = tempMessages;
-    //   }
-    // },
     setMyDetails: (state, action) => {
       state.myDetails = action.payload;
     },

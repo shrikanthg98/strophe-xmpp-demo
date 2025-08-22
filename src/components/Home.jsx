@@ -1,10 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { Strophe } from "strophe.js";
-import {
-  connectXmpp,
-  disconnectXmpp,
-  sendDirectMessage,
-} from "../xmpp/xmppManager";
+import { connectXmpp, disconnectXmpp } from "../xmpp/xmppManager";
 import { useDispatch, useSelector } from "react-redux";
 import { firstLetterCap } from "../utils/helperFuncs";
 import { addMessage, resetState, setXmppConnection } from "../slices/chatSlice";
@@ -72,22 +68,6 @@ function Home() {
   const onLogin = () => {
     if (!username || !password) return;
     connectXmpp(username, password, handleStatus, handleIncoming);
-  };
-
-  const onLogout = () => {
-    disconnectXmpp();
-    dispatch(resetState());
-    dispatch(resetAppState());
-  };
-
-  const onSend = () => {
-    if (!toUserName || !message) return;
-    sendDirectMessage(toUserName, message);
-    setInbox((prev) => [
-      { ts: Date.now(), from: "me", body: message },
-      ...prev,
-    ]);
-    setMessage("");
   };
 
   useEffect(() => {
